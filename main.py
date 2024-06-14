@@ -19,19 +19,9 @@ tile_size = 40
 # load images
 bg_img = pygame.image.load('assets/background.jpg')
 
-# the draw_grid split the screen in 19 columns and rows
-"""
-def draw_grid():
-    for line in range(0, 20):
-        pygame.draw.line(screen, (255, 255, 255), (0, line * tile_size), (screen_width, line * tile_size))
-        pygame.draw.line(screen, (255, 255, 255), (line * tile_size, 0), (line * tile_size, screen_height))
-"""
-
 class World():
     def __init__(self, data):
         self.tile_list = []
-        
-        # load images
         dirt_img = pygame.image.load('assets/ground.png')
 
         row_count = 0 
@@ -39,8 +29,8 @@ class World():
             col_count = 0
             for tile in row:
                 if tile == 1:
-                    img = pygame.transform.scale(dirt_img, (tile_size, tile_size))  # Resize a surface. 
-                    img_rect = img.get_rect()  # Turn the surface into a rectangle object
+                    img = pygame.transform.scale(dirt_img, (tile_size, tile_size))
+                    img_rect = img.get_rect()
                     img_rect.x = col_count * tile_size
                     img_rect.y = row_count * tile_size
                     tile = (img, img_rect)
@@ -81,12 +71,10 @@ world = World(world_data)
 running = True
 while running:
     clock.tick(fps)
-    screen.blit(bg_img, (0, -25))  # Coloca uma imagem preenchendo toda a tela 
+    screen.blit(bg_img, (0, -25))
     world.draw()
 
-    player.update(screen, screen_height)
-
-    # draw_grid()
+    player.update(screen, screen_height, world)  # Passa 'world' como argumento para o método update()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
