@@ -91,16 +91,23 @@ player = Player(100, screen_height - 130)
 world = World(world_data)
 
 #create buttons
-start_button = Button(screen_width // 2 - 90, screen_height // 2 , startbtn_img)
-exit_button = Button(screen_width // 2 - 90, screen_height // 2 + 60, exitbtn_img)
-music_on_button = Button(screen_width // 2 - 40, screen_height // 2 + 120, music_on_img)
-music_off_button = Button(screen_width // 2 + 15, screen_height // 2 + 120, music_off_img)
+start_button = Button(screen_width // 2 - 95, screen_height // 2 - 10, startbtn_img)
+exit_button = Button(screen_width // 2 - 95, screen_height // 2 + 50, exitbtn_img)
+music_on_button = Button(screen_width // 2 + 350, screen_height // 2 + 280, music_on_img)
+music_off_button = Button(screen_width // 2 + 350, screen_height // 2 + 320, music_off_img)
 
 
 running = True
 while running:
 	clock.tick(fps)
 	screen.blit(bg_img, (0, -25))
+
+	if music_on_button.drawbutton():
+		button_sound.play()
+		pygame.mixer.music.play(-1)
+	if music_off_button.drawbutton():
+		button_sound.play()
+		pygame.mixer.music.stop()
 	
 	if main_menu == True:
 		if exit_button.drawbutton():
@@ -108,30 +115,16 @@ while running:
 			running = False
 		if start_button.drawbutton():
 			button_sound.play()
-			pygame.mixer.music.fadeout(1)
 			pygame.mixer.music.stop()
 			pygame.mixer.music.set_volume(0.1)
 			pygame.mixer.music.load('assets/level1.mp3')  # Carregar a nova música
 			pygame.mixer.music.play(-1)
 			main_menu = False
-			bg_img = pygame.image.load('assets/background.jpg')
-		if music_on_button.drawbutton():
-			button_sound.play()
-			pygame.mixer.music.play(-1)
-		if music_off_button.drawbutton():
-			button_sound.play()
-			pygame.mixer.music.stop()
+			bg_img = pygame.image.load('assets/background.jpg')	
 
 	else:
 		world.draw()
-	
-		music_on_button = Button(screen_width // 2 + 350, screen_height // 2 + 270, music_on_img)
-		music_off_button = Button(screen_width // 2 + 350, screen_height // 2 + 320, music_off_img)
-		if music_on_button.drawbutton():
-			pygame.mixer.music.play(-1)
-		if music_off_button.drawbutton():
-			pygame.mixer.music.stop()
-	
+
 		player.update(screen, screen_height, world)  # Passa 'world' como argumento para o método update()
 
 	for event in pygame.event.get():
