@@ -6,8 +6,8 @@ class Player():
         self.images_left = []
         self.index = 0
         self.counter = 0
-        for num in range(1, 5):
-            img_right = pygame.image.load(f'assets/guy{num}.png')
+        for num in range(1, 4):
+            img_right = pygame.image.load(f'assets/girl{num}.png')
             img_right = pygame.transform.scale(img_right, (40, 80))
             img_left = pygame.transform.flip(img_right, True, False)
             self.images_right.append(img_right)
@@ -30,10 +30,10 @@ class Player():
 
         #pega o comando das teclas
         key = pygame.key.get_pressed()
-        if key[pygame.K_SPACE] and not self.jumped:
+        if key[pygame.K_SPACE] and self.jumped==False:
             self.vel_y = -12
             self.jumped = True
-        if not key[pygame.K_SPACE]:
+        if key[pygame.K_SPACE]==False:
             self.jumped = False
         if key[pygame.K_LEFT]:
             dx -= 5
