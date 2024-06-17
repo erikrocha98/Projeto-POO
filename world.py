@@ -18,6 +18,7 @@ class World():
 		self.tile_list = []
 		dirt_img = pygame.image.load('assets/ground_dirt.png')
 		grass_img= pygame.image.load('assets/ground2.png')
+		
 
 		row_count = 0 
 		for row in data:
@@ -48,5 +49,3 @@ class World():
 		screen.blit(bg_img, (0, -25))
 
 
-def aumento(self):
-	return 1+1
