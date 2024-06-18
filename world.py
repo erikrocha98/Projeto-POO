@@ -1,5 +1,5 @@
 import pygame
-from enemy import Ghost
+from enemy import Ghost, Lava
 
 screen_width = 800
 screen_height = 800
@@ -15,6 +15,7 @@ bg_img = pygame.image.load('assets/background.jpg')
 
 #inimigos
 ghost_group = pygame.sprite.Group()
+lava_group= pygame.sprite.Group()
 
 class World():
 	def __init__(self, data): #
@@ -46,6 +47,9 @@ class World():
 				if tile == 3:
 					ghost = Ghost(col_count * tile_size, row_count * tile_size)
 					ghost_group.add(ghost)
+				if tile == 6:
+					lava = Lava(col_count * tile_size, row_count * tile_size + (tile_size//2))
+					lava_group.add(lava)
 				if tile==10:
 					img= pygame.transform.scale(rectTransp, (tile_size, tile_size))
 					img_rect = img.get_rect() 
@@ -61,6 +65,8 @@ class World():
 			screen.blit(tile[0], tile[1])
 		ghost_group.update()
 		ghost_group.draw(screen)
+		lava_group.update()
+		lava_group.draw(screen)
 		
 		
 			
