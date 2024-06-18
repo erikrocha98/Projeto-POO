@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 class Enemy(ABC):
 	
 	@abstractmethod
-	def move(self)-> None:
+	def update(self)-> None:
 		pass
 	""" @abstractmethod
 	def atack(self)-> None:
@@ -20,10 +20,11 @@ class Ghost(Enemy, pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.x = x
 		self.rect.y = y
-		
-	def move (self)->None:
 		self.move_direction = 1
 		self.move_counter = 0
+		
+	def update (self)->None: #Implementa animação simples para o fantasma
+		
 		self.rect.x += self.move_direction
 		self.move_counter += 1
 		if abs(self.move_counter) > 50:

@@ -56,14 +56,15 @@ class World():
 				col_count += 1
 			row_count += 1
 
-	def draw(self): #Percorre a lista de blocos para desenhar na tela cada um deles nas coordenadas salvas em img_rect
+	def draw(self): #Desenha o mundo e objetos/inimigos que estejam neste mundo
 		for tile in self.tile_list:
 			screen.blit(tile[0], tile[1])
+		ghost_group.update()
 		ghost_group.draw(screen)
 		
 		
 			
-	def update(self): #atualiza a tela para manter a imagem de fundo 
+	def update(self): #Atualiza a tela para manter a imagem de fundo 
 		screen.blit(bg_img, (0, -25))
 		
 
