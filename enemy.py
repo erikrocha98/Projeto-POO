@@ -38,7 +38,7 @@ class Lava(Enemy, pygame.sprite.Sprite):
 		self.frames = []
 		for num in range(1, 5):
 			img = pygame.image.load(f'assets/lava{num}.png')
-			img = pygame.transform.scale(img, (tile_size, tile_size // 1.2))
+			img = pygame.transform.scale(img, (tile_size, tile_size // 2))
 			self.frames.append(img)
 		self.current_frame = 0
 		self.image = self.frames[self.current_frame]
@@ -49,3 +49,4 @@ class Lava(Enemy, pygame.sprite.Sprite):
 	def update(self) -> None:
 		self.current_frame = (self.current_frame + 1) % len(self.frames)
 		self.image = self.frames[self.current_frame]
+

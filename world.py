@@ -13,9 +13,6 @@ tile_size = 40
 #carregamento de imagens
 bg_img = pygame.image.load('assets/background.jpg')
 
-#inimigos
-ghost_group = pygame.sprite.Group()
-lava_group= pygame.sprite.Group()
 
 class World():
 	def __init__(self, data): #
@@ -23,6 +20,8 @@ class World():
 		dirt_img = pygame.image.load('assets/ground_dirt.png')
 		grass_img= pygame.image.load('assets/ground2.png')
 		rectTransp=pygame.image.load('assets/rectTransp.png')
+		self.ghost_group = pygame.sprite.Group()
+		self.lava_group= pygame.sprite.Group()
 		
 		#Percorremos a matriz de posições world_data para desenhar objetos pertinentes na tela
 		row_count = 0 
@@ -46,10 +45,10 @@ class World():
 					self.tile_list.append(tile)
 				if tile == 3:
 					ghost = Ghost(col_count * tile_size, row_count * tile_size)
-					ghost_group.add(ghost)
+					self.ghost_group.add(ghost)
 				if tile == 6:
 					lava = Lava(col_count * tile_size, row_count * tile_size + (tile_size//2))
-					lava_group.add(lava)
+					self.lava_group.add(lava)
 				if tile==10:
 					img= pygame.transform.scale(rectTransp, (tile_size, tile_size))
 					img_rect = img.get_rect() 
@@ -60,13 +59,20 @@ class World():
 				col_count += 1
 			row_count += 1
 
-	def draw(self): #Desenha o mundo e objetos/inimigos que estejam neste mundo
+		
+	def draw(self): #Desenha o mundo
 		for tile in self.tile_list:
 			screen.blit(tile[0], tile[1])
-		ghost_group.update()
-		ghost_group.draw(screen)
-		lava_group.update()
-		lava_group.draw(screen)
+		
+
+	def draw_enemies(self)->None: #Desenha objetos e inimigos no mundo
+		
+		self.ghost_group.draw(screen)
+		self.lava_group.draw(screen)
+	
+	def update_enemies(self)->None: #Atualiza os inimigos e objetos no mundo
+		self.ghost_group.update()
+		self.lava_group.update()
 		
 		
 			
