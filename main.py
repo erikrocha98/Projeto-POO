@@ -4,6 +4,8 @@ from player import Player
 from world import World
 from button import Button
 
+
+
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -58,6 +60,7 @@ world_data = [
 
 player = Player(100, screen_height - 130)
 world = World(world_data)
+
 
 #create buttons
 start_button = Button(screen_width // 2 - 90, screen_height // 2 , startbtn_img)

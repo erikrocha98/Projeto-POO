@@ -1,4 +1,5 @@
 import pygame
+from enemy import Ghost
 
 screen_width = 800
 screen_height = 800
@@ -12,6 +13,8 @@ tile_size = 40
 #carregamento de imagens
 bg_img = pygame.image.load('assets/background.jpg')
 
+#inimigos
+ghost_group = pygame.sprite.Group()
 
 class World():
 	def __init__(self, data): #
@@ -20,7 +23,7 @@ class World():
 		grass_img= pygame.image.load('assets/ground2.png')
 		rectTransp=pygame.image.load('assets/rectTransp.png')
 		
-
+		#Percorremos a matriz de posições world_data para desenhar objetos pertinentes na tela
 		row_count = 0 
 		for row in data:
 			col_count = 0
@@ -40,6 +43,9 @@ class World():
 					img_rect.y = row_count * tile_size
 					tile = (img, img_rect)
 					self.tile_list.append(tile)
+				if tile == 3:
+					ghost = Ghost(col_count * tile_size, row_count * tile_size)
+					ghost_group.add(ghost)
 				if tile==10:
 					img= pygame.transform.scale(rectTransp, (tile_size, tile_size))
 					img_rect = img.get_rect() 
@@ -53,8 +59,11 @@ class World():
 	def draw(self): #Percorre a lista de blocos para desenhar na tela cada um deles nas coordenadas salvas em img_rect
 		for tile in self.tile_list:
 			screen.blit(tile[0], tile[1])
+		ghost_group.draw(screen)
+		
+		
 			
 	def update(self): #atualiza a tela para manter a imagem de fundo 
 		screen.blit(bg_img, (0, -25))
-
+		
 
