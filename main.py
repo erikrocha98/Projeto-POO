@@ -6,6 +6,7 @@ from world import World
 from button import Button
 from portal import Portal
 from os import path
+from coin import Coin
 
 pygame.init()
 
@@ -51,6 +52,7 @@ button_sound.set_volume(0.2)
 player = Player(100, screen_height - 130)
 
 portal_group = pygame.sprite.Group()
+coin_group = pygame.sprite.Group()
 
 # Função para carregar o level data e criar o mundo
 def load_level(level):
@@ -122,6 +124,7 @@ while running:
         # Desenhar os inimigos (fantasmas e lava)
         world.ghost_group.draw(screen)
         world.lava_group.draw(screen)
+        world.coin_group.draw(screen)
 
         game_over = player.update(screen, screen_height, world, game_over)  # Passa 'world' como argumento para o método update()
 

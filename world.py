@@ -1,6 +1,7 @@
 import pygame
 from enemy import Ghost, Lava
 from portal import Portal
+from coin import Coin
 
 screen_width = 800
 screen_height = 800
@@ -23,6 +24,7 @@ class World():
         rectTransp = pygame.image.load('assets/rectTransp.png')
         self.ghost_group = pygame.sprite.Group()
         self.lava_group = pygame.sprite.Group()
+        self.coin_group = pygame.sprite.Group()
         self.portal_group = portal_group  # Armazena portal_group no objeto
         
         # Percorremos a matriz de posições world_data para desenhar objetos pertinentes na tela
@@ -52,6 +54,9 @@ class World():
                 elif tile == 6:
                     lava = Lava(col_count * tile_size, row_count * tile_size + (tile_size // 2))
                     self.lava_group.add(lava)
+                elif tile == 7:
+                    coin = Coin(col_count * tile_size + (tile_size // 2), row_count * tile_size + (tile_size // 2))
+                    self.coin_group.add(coin)
                 elif tile == 10:
                     img = pygame.transform.scale(rectTransp, (tile_size, tile_size))
                     img_rect = img.get_rect() 

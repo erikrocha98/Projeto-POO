@@ -26,6 +26,7 @@ enemy_img = pygame.Surface((tile_size, tile_size), pygame.SRCALPHA)
 pygame.draw.rect(enemy_img, (255, 0, 0), enemy_img.get_rect())  # Quadrado vermelho
 lava_img = pygame.image.load('assets/lava1.png')
 portal_img = pygame.image.load('assets/portal.png')
+coin_img = pygame.image.load('assets/coin.png')
 save_img = pygame.image.load('assets/save_btn.png')
 load_img = pygame.image.load('assets/load_btn.png')
 
@@ -77,6 +78,9 @@ def draw_world():
                 elif world_data[row][col] == 6:
                     img = pygame.transform.scale(lava_img, (tile_size, tile_size // 2))
                     screen.blit(img, (col * tile_size, row * tile_size + (tile_size // 2)))
+                elif world_data[row][col] == 7:
+                    img = pygame.transform.scale(coin_img, (tile_size, tile_size // 2))
+                    screen.blit(img, (col * tile_size , row * tile_size))
 
 class Button():
     def __init__(self, x, y, image):
@@ -130,12 +134,12 @@ while running:
             if x < cols and y < cols:
                 if pygame.mouse.get_pressed()[0] == 1:
                     world_data[y][x] += 1
-                    if world_data[y][x] > 6:
+                    if world_data[y][x] > 7:  # Atualizado para incluir valor 7
                         world_data[y][x] = 0
                 elif pygame.mouse.get_pressed()[2] == 1:
                     world_data[y][x] -= 1
                     if world_data[y][x] < 0:
-                        world_data[y][x] = 6
+                        world_data[y][x] = 7  # Atualizado para incluir valor 7
         if event.type == pygame.MOUSEBUTTONUP:
             clicked = False
         if event.type == pygame.KEYDOWN:
