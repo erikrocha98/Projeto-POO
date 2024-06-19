@@ -4,6 +4,14 @@ from world import World
 
 world= World
 
+pygame.mixer.init()
+
+enemy_collide_sound = pygame.mixer.Sound('assets/enemy.ogg')
+enemy_collide_sound.set_volume(0.1)
+lava_collide_sound = pygame.mixer.Sound('assets/lava.ogg')
+lava_collide_sound.set_volume(0.1)
+
+
 class Player():
 	def __init__(self, x, y):
 		self.images_right = []
@@ -93,11 +101,13 @@ class Player():
 						self.jump_count = 0  # Reseta o contador de pulos ao tocar o chão
 				#checando colisão com inimigos
 				if pygame.sprite.spritecollide(self, world.ghost_group, False):
+					enemy_collide_sound.play()
 					game_over = -1
 					print(game_over)
 
 				#check for collision with lava
 				if pygame.sprite.spritecollide(self, world.lava_group, False):
+					lava_collide_sound.play()
 					game_over = -1
 					print(game_over)
 
