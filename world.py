@@ -64,16 +64,6 @@ class World():
         self.ghost_group.update()
         self.lava_group.update()
 
-    # Não é mais necessário o método draw(), pois o desenho será feito no loop principal do jogo
-    # def draw(self):  # Desenha o mundo
-    #     for tile in self.tile_list:
-    #         screen.blit(tile[0], tile[1])
-
-    # Não é mais necessário o método draw_enemies(), pois o desenho dos inimigos será feito no loop principal do jogo
-    # def draw_enemies(self):  # Desenha objetos e inimigos no mundo
-    #     self.ghost_group.draw(screen)
-    #     self.lava_group.draw(screen)
-
     def get_portal_positions(self):
         return self.portal_positions
 
