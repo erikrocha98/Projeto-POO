@@ -16,7 +16,7 @@ tile_size = 40
 bg_img = pygame.image.load('assets/background.jpg')
 
 class World():
-    def __init__(self, data, portal_group):  # Adicionado parâmetro portal_group
+    def __init__(self, data, portal_group, coin_group):  # Adicionado parâmetro portal_group
         self.tile_list = []
         self.portal_positions = []
         dirt_img = pygame.image.load('assets/ground_dirt.png')
@@ -64,6 +64,12 @@ class World():
                     img_rect.y = row_count * tile_size 
                     tile = (img, img_rect)
                     self.tile_list.append(tile)
+    
+    def get_coin_positions(self):
+        coin_positions = []
+        for coin in self.coin_group:
+            coin_positions.append((coin.rect.x, coin.rect.y))
+        return coin_positions
 
     def update_enemies(self):  # Atualiza os inimigos e objetos no mundo
         self.ghost_group.update()

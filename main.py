@@ -17,7 +17,9 @@ screen_width = 800
 screen_height = 800
 
 screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("decoding your fears: Clara's path")
+
+# Font para exibir o score
+font = pygame.font.SysFont('Bauhaus 93', 30)
 
 # uteis para entrada de texto
 base_font = pygame.font.Font(None, 30)
@@ -59,7 +61,7 @@ def load_level(level):
     if path.exists(f'level{level}_data'):
         with open(f'level{level}_data', 'rb') as pickle_in:
             world_data = pickle.load(pickle_in)
-        world = World(world_data, portal_group)  # Passa portal_group para World
+        world = World(world_data, portal_group, coin_group)  # Passa portal_group para World
         portal_group.empty()
         portal_positions = world.get_portal_positions()
         for pos in portal_positions:
@@ -83,6 +85,12 @@ submit_button = Button(screen_width // 2 - 20, screen_height // 2 + 50, submitbt
 music_on_button = Button(screen_width // 2 + 350, screen_height // 2 + 270, music_on_img)
 music_off_button = Button(screen_width // 2 + 350, screen_height // 2 + 320, music_off_img)
 restart_button = Button(screen_width // 2 - 98, screen_height // 2, restartbtn_img)
+
+def draw_text(text, font, color, surface, x, y):
+    text_obj = font.render(text, True, color)
+    text_rect = text_obj.get_rect()
+    text_rect.topleft = (x, y)
+    surface.blit(text_obj, text_rect)
 
 running = True
 while running:
@@ -128,13 +136,17 @@ while running:
 
         game_over = player.update(screen, screen_height, world, game_over)  # Passa 'world' como argumento para o método update()
 
+        # Desenha o score na tela
+        draw_text(f'Score: {player.score}', font, (255, 255, 255), screen, 10, 10)
+
         for portal in portal_group:
             if player.rect.colliderect(portal.rect):
                 level += 1
                 new_world = load_level(level)
                 if new_world:
                     world = new_world
-                    player = Player(100, screen_height - 130)  # Reseta o jogador para a posição inicial
+                    player.rect.x = 100
+                    player.rect.y = screen_height - 130  # Reseta a posição do jogador
                 else:
                     running = False
 
