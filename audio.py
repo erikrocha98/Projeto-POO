@@ -7,8 +7,9 @@ class AudioManager:
         self.music_paused = False
         self.sounds = {
             'button': pygame.mixer.Sound('assets/botao.wav'),
-            'enemy_collide': pygame.mixer.Sound('assets/enemy.ogg'),
-            'lava_collide': pygame.mixer.Sound('assets/lava.ogg')
+            'enemy': pygame.mixer.Sound('assets/enemy.ogg'),
+            'lava': pygame.mixer.Sound('assets/lava.ogg'),
+            'coin': pygame.mixer.Sound('assets/coin.ogg')
         }
         self.music_volume = 0.5
         pygame.mixer.music.set_volume(self.music_volume)
