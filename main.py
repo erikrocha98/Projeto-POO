@@ -58,8 +58,9 @@ coin_group = pygame.sprite.Group()
 
 # Função para carregar o level data e criar o mundo
 def load_level(level):
-    if path.exists(f'level{level}_data'):
-        with open(f'level{level}_data', 'rb') as pickle_in:
+    level_path = f'level/level{level}_data'  # Atualiza o caminho para a pasta level
+    if path.exists(level_path):
+        with open(level_path, 'rb') as pickle_in:
             world_data = pickle.load(pickle_in)
         world = World(world_data, portal_group, coin_group)  # Passa portal_group para World
         portal_group.empty()
@@ -73,9 +74,6 @@ def load_level(level):
         return None
 
 # Carregando o nível inicial
-if path.exists(f'level{level}_data'):
-    pickle_in = open(f'level{level}_data', 'rb')
-    world_data = pickle.load(pickle_in)
 world = load_level(level)
 
 # create buttons
@@ -134,7 +132,7 @@ while running:
         world.lava_group.draw(screen)
         world.coin_group.draw(screen)
 
-        game_over = player.update(screen, screen_height, world, game_over)  # Passa 'world' como argumento para o método update()
+        game_over, player_score = player.update(screen, screen_height, world, game_over) # Passa 'world' como argumento para o método update()
 
         # Desenha o score na tela
         draw_text(f'Score: {player.score}', font, (255, 255, 255), screen, 10, 10)

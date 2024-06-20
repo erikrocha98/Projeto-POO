@@ -149,11 +149,11 @@ while running:
                 level -= 1
 
     if save_button.draw():
-        with open(f'level{level}_data', 'wb') as pickle_out:
+        with open(f'level/level{level}_data', 'wb') as pickle_out:
             pickle.dump(world_data, pickle_out)
     if load_button.draw():
-        if path.exists(f'level{level}_data'):
-            with open(f'level{level}_data', 'rb') as pickle_in:
+        if path.exists(f'level/level{level}_data'):
+            with open(f'level/level{level}_data', 'rb') as pickle_in:
                 world_data = pickle.load(pickle_in)
 
     pygame.display.update()

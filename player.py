@@ -1,8 +1,6 @@
 import pygame
 from enemy import Ghost, Lava
-from world import World
 
-world = World
 
 pygame.mixer.init()
 
@@ -42,6 +40,7 @@ class Player(pygame.sprite.Sprite):
         dx = 0
         dy = 0
         walk_cooldown = 5
+        player_score = 0  # Inicializa a pontuação do jogador neste método
 
         # Pega os comandos das teclas
         key = pygame.key.get_pressed()
@@ -101,13 +100,14 @@ class Player(pygame.sprite.Sprite):
                         self.vel_y = 0
                         self.jump_count = 0  # Reseta o contador de pulos ao tocar o chão
 
+                # Checando colisão com inimigos
                 #checando colisão com inimigos
                 if pygame.sprite.spritecollide(self, world.ghost_group, False):
                     enemy_collide_sound.play()
                     game_over = -1
                     print(game_over)
 
-                #check for collision with lava
+                # Checando colisão com lava
                 if pygame.sprite.spritecollide(self, world.lava_group, False):
                     lava_collide_sound.play()
                     game_over = -1
@@ -116,7 +116,8 @@ class Player(pygame.sprite.Sprite):
             # Checando a colisão com moedas
             coin_collision_list = pygame.sprite.spritecollide(self, world.coin_group, True)
             if coin_collision_list:
-                self.score += len(coin_collision_list)  # Atualiza o score com o número de moedas coletadas
+                player_score = len(coin_collision_list)  # Atualiza o player_score com o número de moedas coletadas
+                self.score += player_score  # Atualiza o score total do jogador com a pontuação do último update
 
         # Atualiza as coordenadas do player
         self.rect.x += dx
@@ -131,7 +132,9 @@ class Player(pygame.sprite.Sprite):
             self.image = self.dead_image
             if self.rect.y > 200:
                 self.rect.y -= 5
+
         # coloca o player na tela
         screen.blit(self.image, self.rect)
 
-        return game_over
+        # Retorna tanto o estado do jogo quanto a pontuação do jogador
+        return game_over, player_score
