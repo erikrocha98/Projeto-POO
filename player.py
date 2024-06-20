@@ -8,6 +8,8 @@ enemy_collide_sound = pygame.mixer.Sound('assets/enemy.ogg')
 enemy_collide_sound.set_volume(0.1)
 lava_collide_sound = pygame.mixer.Sound('assets/lava.ogg')
 lava_collide_sound.set_volume(0.1)
+coin_collide_sound = pygame.mixer.Sound('assets/coin.ogg')
+coin_collide_sound.set_volume(0.1)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -116,6 +118,7 @@ class Player(pygame.sprite.Sprite):
             # Checando a colisão com moedas
             coin_collision_list = pygame.sprite.spritecollide(self, world.coin_group, True)
             if coin_collision_list:
+                coin_collide_sound.play()
                 player_score = len(coin_collision_list)  # Atualiza o player_score com o número de moedas coletadas
                 self.score += player_score  # Atualiza o score total do jogador com a pontuação do último update
 
