@@ -26,10 +26,6 @@ pygame.display.set_caption("decoding your fears: Clara's path")
 audio_manager = AudioManager()
 score_manager = ScoreManager()
 
-# para usar o delay entre botoes na mesma posição
-last_click_time = 0
-click_delay = 0.2
-
 # Font para exibir o score
 font = pygame.font.Font('assets/game_font.ttf', 20)
 
@@ -92,8 +88,8 @@ exit_button = Button(screen_width // 2 - 98, screen_height // 2, exitbtn_img)
 submit_button = Button(screen_width // 2 - 20, screen_height // 2 + 50, submitbtn_img)
 music_on_button = Button(screen_width // 2 + 350, screen_height // 2 + 280, music_on_img)
 music_off_button = Button(screen_width // 2 + 350, screen_height // 2 + 320, music_off_img)
-restart_button = Button(screen_width // 2 - 98, screen_height // 2 - 60, restartbtn_img)
-quit_button = Button(screen_width // 2 - 98, screen_height // 2, quitbtn_img)
+restart_button = Button(screen_width // 2 - 98, screen_height // 2, restartbtn_img)
+quit_button = Button(screen_width // 2 - 98, screen_height // 2 - 60, quitbtn_img)
 records_button = Button(screen_width // 2 - 98, screen_height // 2 + 60, recordesbtn_img)
 back_button = Button(screen_width // 2 - 100, 480, backbtn_img)
 
@@ -107,7 +103,6 @@ running = True
 while running:
     clock.tick(fps)
     screen.blit(bg_img, (0, -25))
-    current_time = time.time()
     top_scores = score_manager.get_top_scores(1)  # Obtém apenas o high score
     high_score = top_scores[0][1] if top_scores else 0
     name_score = top_scores[0][0] if top_scores else 0
@@ -117,11 +112,9 @@ while running:
             if start_button.drawbutton():
                 audio_manager.play_sound('button')  # Tocar som do botão
                 nickname_entered = True
-            if time.time() - last_click_time > click_delay:
-                if exit_button.drawbutton():
-                    audio_manager.play_sound('button')
-                    running = False
-                    last_click_time = current_time
+            if exit_button.drawbutton():
+                audio_manager.play_sound('button')
+                running = False
             if records_button.drawbutton():
                 audio_manager.play_sound('button')
                 show_high_scores_screen = True
@@ -201,10 +194,9 @@ while running:
                 audio_manager.stop_music()
                 audio_manager.play_music('assets/desafio.mp3')  # Toca a música da tela inicial
                 bg_img = pygame.image.load('assets/background_start.png')  # Retorna a imagem de fundo inicial
-                last_click_time = current_time
 
             else:
-                draw_text('Game Over', font, (255,0,0), screen, screen_width // 2 - 50, screen_height // 2 - 120)
+                draw_text('Game Over', font, (255,0,0), screen, screen_width // 2 - 60, screen_height // 2 - 100)
 
     if music_on_button.drawbutton():
         audio_manager.play_sound('button')
