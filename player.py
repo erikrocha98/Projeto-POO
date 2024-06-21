@@ -99,6 +99,7 @@ class Player(pygame.sprite.Sprite):
                         self.jump_count = 0  # Reseta o contador de pulos ao tocar o chão
 
                 # Checando colisão com inimigos
+                #checando colisão com inimigos
                 if pygame.sprite.spritecollide(self, world.ghost_group, False):
                     audio_manager.play_sound('enemy')
                     game_over = -1
