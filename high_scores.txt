@@ -2,3 +2,13 @@ ana,4
 anna,4
 ana,2
 fdsgfgfgfd,1
+anna,0
+anna,0
+anna,0
+ghg,0
+fgfg,0
+gghj,0
+hghfd,0
+dfsdf,0
+gfhjg,0
+fhgfj,0

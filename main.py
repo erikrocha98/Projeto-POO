@@ -1,5 +1,6 @@
 import pygame
 import pickle
+import time
 from pygame.locals import *
 from player import Player
 from world import World
@@ -25,6 +26,10 @@ pygame.display.set_caption("decoding your fears: Clara's path")
 audio_manager = AudioManager()
 score_manager = ScoreManager()
 
+# para usar o delay entre botoes na mesma posição
+last_click_time = 0
+click_delay = 0.2
+
 # Font para exibir o score
 font = pygame.font.Font('assets/game_font.ttf', 20)
 
@@ -38,6 +43,7 @@ rect_color = (80, 80, 80)
 active = False
 nickname_entered = False
 main_menu = True
+show_high_scores_screen = False
 game_over = 0
 level = 1
 
@@ -50,6 +56,8 @@ music_on_img = pygame.image.load('assets/music_on.png')
 music_off_img = pygame.image.load('assets/music_off.png')
 restartbtn_img = pygame.image.load('assets/restart.png')
 quitbtn_img = pygame.image.load('assets/quit.png')
+recordesbtn_img = pygame.image.load('assets/recordes.png')
+backbtn_img = pygame.image.load('assets/back.png')
 
 audio_manager.play_music('assets/desafio.mp3') 
 
@@ -79,13 +87,15 @@ def load_level(level):
 world = load_level(level)
 
 # create buttons
-start_button = Button(screen_width // 2 - 98, screen_height // 2 - 5, startbtn_img)
-exit_button = Button(screen_width // 2 - 98, screen_height // 2 + 55, exitbtn_img)
+start_button = Button(screen_width // 2 - 98, screen_height // 2 - 60, startbtn_img)
+exit_button = Button(screen_width // 2 - 98, screen_height // 2, exitbtn_img)
 submit_button = Button(screen_width // 2 - 20, screen_height // 2 + 50, submitbtn_img)
 music_on_button = Button(screen_width // 2 + 350, screen_height // 2 + 280, music_on_img)
 music_off_button = Button(screen_width // 2 + 350, screen_height // 2 + 320, music_off_img)
-restart_button = Button(screen_width // 2 - 98, screen_height // 2 - 70, restartbtn_img)
-quit_button = Button(screen_width // 2 - 98, screen_height // 2 - 10, quitbtn_img)
+restart_button = Button(screen_width // 2 - 98, screen_height // 2 - 60, restartbtn_img)
+quit_button = Button(screen_width // 2 - 98, screen_height // 2, quitbtn_img)
+records_button = Button(screen_width // 2 - 98, screen_height // 2 + 60, recordesbtn_img)
+back_button = Button(screen_width // 2 - 100, 480, backbtn_img)
 
 def draw_text(text, font, color, surface, x, y):
     text_obj = font.render(text, True, color)
@@ -97,6 +107,7 @@ running = True
 while running:
     clock.tick(fps)
     screen.blit(bg_img, (0, -25))
+    current_time = time.time()
     top_scores = score_manager.get_top_scores(1)  # Obtém apenas o high score
     high_score = top_scores[0][1] if top_scores else 0
     name_score = top_scores[0][0] if top_scores else 0
@@ -106,14 +117,22 @@ while running:
             if start_button.drawbutton():
                 audio_manager.play_sound('button')  # Tocar som do botão
                 nickname_entered = True
-            if exit_button.drawbutton():
+            if time.time() - last_click_time > click_delay:
+                if exit_button.drawbutton():
+                    audio_manager.play_sound('button')
+                    running = False
+                    last_click_time = current_time
+            if records_button.drawbutton():
                 audio_manager.play_sound('button')
-                running = False
+                show_high_scores_screen = True
+                main_menu = False
+                
         else:
             pygame.draw.rect(screen, (200, 200, 200), input_rect, 0, 90)
             pygame.draw.rect(screen, rect_color, input_rect2, 5, 90)
             text_surface = font.render(user_text, True, (0, 0, 0))
             screen.blit(text_surface, (input_rect.x + 10, input_rect.y + 5))
+            draw_text(f'QUAL O SEU NOME?', font, (0,0,0), screen, 300, 360)
 
             if user_text and submit_button.drawbutton():
                 audio_manager.play_sound('button')
@@ -121,10 +140,17 @@ while running:
                 audio_manager.stop_music()
                 audio_manager.play_music('assets/level1.mp3') 
                 bg_img = pygame.image.load('assets/background.jpg')
+
+    elif show_high_scores_screen:
+        score_manager.draw_high_scores(screen, font, font, (255,255,255), (255,255,255), screen_width, screen_height)
+        if back_button.drawbutton():
+             audio_manager.play_sound('button')
+             main_menu = True
+             show_high_scores_screen = False
+
     else:
         world.update_enemies()
         nickname_entered = False
-
 
         # Desenhar os elementos do mundo diretamente no loop principal
         for tile in world.get_tile_list():
@@ -164,7 +190,7 @@ while running:
                 game_over = 0
                 pygame.mixer.music.play(-1)
 
-            if quit_button.drawbutton():
+            elif quit_button.drawbutton():
                 score_manager.add_score(user_text, player.score)
                 score_manager.save_scores()                
                 audio_manager.play_sound('button')  # Tocar som do botão ao clicar
@@ -175,9 +201,10 @@ while running:
                 audio_manager.stop_music()
                 audio_manager.play_music('assets/desafio.mp3')  # Toca a música da tela inicial
                 bg_img = pygame.image.load('assets/background_start.png')  # Retorna a imagem de fundo inicial
+                last_click_time = current_time
 
             else:
-                draw_text('Game Over', font, (255,0,0), screen, screen_width // 2 - 75, screen_height // 2 - 120)
+                draw_text('Game Over', font, (255,0,0), screen, screen_width // 2 - 50, screen_height // 2 - 120)
 
     if music_on_button.drawbutton():
         audio_manager.play_sound('button')
