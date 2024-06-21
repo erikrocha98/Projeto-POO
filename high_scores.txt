@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ana,4
 anna,4
 ana,2
@@ -12,3 +13,7 @@ hghfd,0
 dfsdf,0
 gfhjg,0
 fhgfj,0
+=======
+ana,8
+
+>>>>>>> ec83471d519b25159c7fdb6609c8da7652ef16bf
