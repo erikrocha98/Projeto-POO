@@ -1,13 +1,11 @@
 import pygame
 import pickle
-import time
 from pygame.locals import *
 from player import Player
 from world import World
 from button import Button
 from portal import Portal
 from os import path
-from coin import Coin
 from audio import AudioManager
 from score import ScoreManager
 
@@ -20,7 +18,6 @@ screen_width = 800
 screen_height = 800
 
 screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("decoding your fears: Clara's path")
 
 # Instanciando o gerenciador de áudio e score
 audio_manager = AudioManager()
@@ -42,6 +39,8 @@ main_menu = True
 show_high_scores_screen = False
 game_over = 0
 level = 1
+final_level = 5  # Defina o nível final aqui
+show_final_screen = False
 
 # load images
 bg_img = pygame.image.load('assets/background_start.png')
@@ -141,6 +140,18 @@ while running:
              main_menu = True
              show_high_scores_screen = False
 
+    elif show_final_screen:
+        # Desenhar a tela final
+        screen.fill((0, 0, 0))  # Preenche a tela com preto
+        draw_text('Parabéns, você concluiu todos os desafios do jogo!!', font, (255, 255, 255), screen, 100, screen_height // 2 - 50)
+        draw_text('E venceu essa batalha', font, (255, 255, 255), screen, 100, screen_height // 2)
+        
+        if back_button.drawbutton():
+            audio_manager.play_sound('button')
+            show_final_screen = False
+            show_high_scores_screen = True
+            main_menu = False
+
     else:
         world.update_enemies()
         nickname_entered = False
@@ -164,14 +175,25 @@ while running:
 
         for portal in portal_group:
             if player.rect.colliderect(portal.rect):
-                level += 1
-                new_world = load_level(level)
-                if new_world:
-                    world = new_world
-                    player.rect.x = 100
-                    player.rect.y = screen_height - 130  # Reseta a posição do jogador
+                if level < final_level:
+                    level += 1
+                    new_world = load_level(level)
+                    if new_world:
+                        world = new_world
+                        player.rect.x = 100
+                        player.rect.y = screen_height - 130  # Reseta a posição do jogador
                 else:
-                    running = False
+                    # Nível final completado, exibe a tela final
+                    show_final_screen = True
+                    score_manager.add_score(user_text, player.score)
+                    score_manager.save_scores()
+                    game_over = 0
+                    player = Player(100, screen_height - 130)  # Reseta o jogador
+                    world = load_level(1)  # Carrega o primeiro nível ou reset
+                    audio_manager.stop_music()
+                    audio_manager.play_music('assets/desafio.mp3')
+                    bg_img = pygame.image.load('assets/background_start.png')
+                    break
 
         if game_over == -1:
             pygame.mixer.music.stop()
@@ -186,46 +208,24 @@ while running:
             elif quit_button.drawbutton():
                 score_manager.add_score(user_text, player.score)
                 score_manager.save_scores()                
-                audio_manager.play_sound('button')  # Tocar som do botão ao clicar
-                main_menu = True  # Retorna para a tela inicial
-                game_over = 0  # Reseta o estado de fim de jogo
-                player = Player(100, screen_height - 130)  # Reseta o jogador
-                world = load_level(level)  # Carrega novamente o nível inicial ou reset
-                audio_manager.stop_music()
-                audio_manager.play_music('assets/desafio.mp3')  # Toca a música da tela inicial
-                bg_img = pygame.image.load('assets/background_start.png')  # Retorna a imagem de fundo inicial
+                audio_manager.play_sound('button')  # Tocar som do botão
+                running = False
 
-            else:
-                draw_text('Game Over', font, (255,0,0), screen, screen_width // 2 - 60, screen_height // 2 - 100)
-
-    if music_on_button.drawbutton():
-        audio_manager.play_sound('button')
-        pygame.mixer.music.play(-1)  
-
-    if music_off_button.drawbutton():
-        audio_manager.play_sound('button')
-        audio_manager.stop_music()
+        if music_on_button.drawbutton():
+            audio_manager.toggle_music(True)
+        if music_off_button.drawbutton():
+            audio_manager.toggle_music(False)
 
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == QUIT:
             running = False
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if input_rect.collidepoint(event.pos):
-                active = True
-                rect_color = (56, 56, 56)
-            else:
-                active = False
-                rect_color = (70, 110, 119)
-
         if event.type == pygame.KEYDOWN:
-            if active and nickname_entered:
-                if event.key == pygame.K_BACKSPACE:
-                    user_text = user_text[:-1]
-                else:
-                    # Limitar o tamanho do texto ao tamanho do retângulo
-                    if font.size(user_text + event.unicode)[0] < input_rect.width - 12:
-                        user_text += event.unicode
+            if event.key == pygame.K_RETURN:
+                active = False
+            if event.key == pygame.K_BACKSPACE:
+                user_text = user_text[:-1]
+            else:
+                user_text += event.unicode
 
     pygame.display.update()
 
