@@ -26,7 +26,7 @@ score_manager = ScoreManager()
 # Font para exibir o score
 font = pygame.font.Font('assets/game_font.ttf', 20)
 
-# uteis para entrada de texto
+# Utilitários para entrada de texto
 base_font = pygame.font.Font('assets/game_font.ttf', 24)
 user_text = ''
 input_rect = pygame.Rect(screen_width // 2 - 90, screen_height // 2 - 2, 175, 45)
@@ -38,11 +38,12 @@ nickname_entered = False
 main_menu = True
 show_high_scores_screen = False
 game_over = 0
-level = 1
+current_level = 1
 final_level = 5  # Defina o nível final aqui
 show_final_screen = False
+level = 1
 
-# load images
+# Load images
 bg_img = pygame.image.load('assets/background_start.png')
 startbtn_img = pygame.image.load('assets/start.png')
 exitbtn_img = pygame.image.load('assets/exit.png')
@@ -61,7 +62,7 @@ player = Player(100, screen_height - 130)
 portal_group = pygame.sprite.Group()
 coin_group = pygame.sprite.Group()
 
-# Função para carregar o level data e criar o mundo
+# Função para carregar os dados do nível e criar o mundo
 def load_level(level):
     level_path = f'level/level{level}_data'  # Atualiza o caminho para a pasta level
     if path.exists(level_path):
@@ -75,13 +76,13 @@ def load_level(level):
             portal_group.add(new_portal)
         return world
     else:
-        print("No more levels!")
+        print(f"Level {level} data not found!")
         return None
 
 # Carregando o nível inicial
-world = load_level(level)
+world = load_level(current_level)
 
-# create buttons
+# Criação dos botões
 start_button = Button(screen_width // 2 - 98, screen_height // 2 - 60, startbtn_img)
 exit_button = Button(screen_width // 2 - 98, screen_height // 2, exitbtn_img)
 submit_button = Button(screen_width // 2 - 20, screen_height // 2 + 50, submitbtn_img)
@@ -111,6 +112,12 @@ while running:
             if start_button.drawbutton():
                 audio_manager.play_sound('button')  # Tocar som do botão
                 nickname_entered = True
+                current_level = 1  # Reinicia o nível para 1 ao iniciar um novo jogo
+                world = load_level(current_level)  # Carrega o nível 1
+                player.score = 0  # Reseta o score
+                user_text = ''  # Limpa o nome do usuário
+                player.rect.x = 100  # Posiciona o jogador no início da fase
+                player.rect.y = screen_height - 130
             if exit_button.drawbutton():
                 audio_manager.play_sound('button')
                 running = False
@@ -127,6 +134,7 @@ while running:
             draw_text(f'QUAL O SEU NOME?', font, (0,0,0), screen, 300, 360)
 
             if user_text and submit_button.drawbutton():
+                nickname_entered = False
                 audio_manager.play_sound('button')
                 main_menu = False
                 audio_manager.stop_music()
@@ -175,13 +183,11 @@ while running:
 
         for portal in portal_group:
             if player.rect.colliderect(portal.rect):
-                if level < final_level:
-                    level += 1
-                    new_world = load_level(level)
-                    if new_world:
-                        world = new_world
-                        player.rect.x = 100
-                        player.rect.y = screen_height - 130  # Reseta a posição do jogador
+                if current_level < final_level:
+                    current_level += 1
+                    world = load_level(current_level)
+                    player.rect.x = 100
+                    player.rect.y = screen_height - 130  # Reseta a posição do jogador
                 else:
                     # Nível final completado, exibe a tela final
                     show_final_screen = True
@@ -189,7 +195,8 @@ while running:
                     score_manager.save_scores()
                     game_over = 0
                     player = Player(100, screen_height - 130)  # Reseta o jogador
-                    world = load_level(1)  # Carrega o primeiro nível ou reset
+                    current_level = 1  # Reinicia o nível para 1 ao concluir o jogo
+                    world = load_level(current_level)  # Carrega o nível 1
                     audio_manager.stop_music()
                     audio_manager.play_music('assets/desafio.mp3')
                     bg_img = pygame.image.load('assets/background_start.png')
@@ -201,15 +208,22 @@ while running:
             if restart_button.drawbutton():
                 audio_manager.play_sound('button')
                 player = Player(100, screen_height - 130)  # Reseta o jogador
-                world = load_level(level)  # Reseta o mundo
+                world = load_level(current_level)  # Carrega o nível atual
                 game_over = 0
                 pygame.mixer.music.play(-1)
 
             elif quit_button.drawbutton():
                 score_manager.add_score(user_text, player.score)
                 score_manager.save_scores()                
-                audio_manager.play_sound('button')  # Tocar som do botão
-                running = False
+                audio_manager.play_sound('button')  # Tocar som do botão ao clicar
+                show_high_scores_screen = True  # Retorna para a tela inicial
+                game_over = 0  # Reseta o estado de fim de jogo
+                player = Player(100, screen_height - 130)  # Reseta o jogador
+                world = load_level(level)  # Carrega novamente o nível inicial ou reset
+                audio_manager.stop_music()
+                audio_manager.play_music('assets/desafio.mp3')  # Toca a música da tela inicial
+                bg_img = pygame.image.load('assets/background_start.png')  # Retorna a imagem de fundo inicial
+
 
         if music_on_button.drawbutton():
             audio_manager.toggle_music(True)
