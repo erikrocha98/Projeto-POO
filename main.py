@@ -26,7 +26,7 @@ audio_manager = AudioManager()
 score_manager = ScoreManager()
 
 # Font para exibir o score
-font = pygame.font.Font('assets/game_font.ttf', 24)
+font = pygame.font.Font('assets/game_font.ttf', 20)
 
 # uteis para entrada de texto
 base_font = pygame.font.Font('assets/game_font.ttf', 24)
@@ -82,7 +82,7 @@ world = load_level(level)
 start_button = Button(screen_width // 2 - 98, screen_height // 2 - 5, startbtn_img)
 exit_button = Button(screen_width // 2 - 98, screen_height // 2 + 55, exitbtn_img)
 submit_button = Button(screen_width // 2 - 20, screen_height // 2 + 50, submitbtn_img)
-music_on_button = Button(screen_width // 2 + 350, screen_height // 2 + 270, music_on_img)
+music_on_button = Button(screen_width // 2 + 350, screen_height // 2 + 280, music_on_img)
 music_off_button = Button(screen_width // 2 + 350, screen_height // 2 + 320, music_off_img)
 restart_button = Button(screen_width // 2 - 98, screen_height // 2 - 70, restartbtn_img)
 quit_button = Button(screen_width // 2 - 98, screen_height // 2 - 10, quitbtn_img)
@@ -99,6 +99,7 @@ while running:
     screen.blit(bg_img, (0, -25))
     top_scores = score_manager.get_top_scores(1)  # Obtém apenas o high score
     high_score = top_scores[0][1] if top_scores else 0
+    name_score = top_scores[0][0] if top_scores else 0
 
     if main_menu:
         if not nickname_entered:
@@ -112,7 +113,7 @@ while running:
             pygame.draw.rect(screen, (200, 200, 200), input_rect, 0, 90)
             pygame.draw.rect(screen, rect_color, input_rect2, 5, 90)
             text_surface = font.render(user_text, True, (0, 0, 0))
-            screen.blit(text_surface, (input_rect.x + 10, input_rect.y + 1))
+            screen.blit(text_surface, (input_rect.x + 10, input_rect.y + 5))
 
             if user_text and submit_button.drawbutton():
                 audio_manager.play_sound('button')
@@ -139,8 +140,8 @@ while running:
         game_over, player_score = player.update(screen, screen_height, world, game_over) # Passa 'world' como argumento para o método update()
 
         # Desenha o score na tela
-        draw_text(f'Score: {player.score} ({user_text})', font, (255, 255, 255), screen, 10, 10)
-        draw_text(f'High Score: {high_score}', font, (255, 255, 255), screen, 10, 40)
+        draw_text(f'Score: {player.score} ({user_text})', font, (255, 255, 255), screen, 45, 6)
+        draw_text(f'High Score: {high_score}', font, (255, 255, 255), screen, 600, 6)
 
         for portal in portal_group:
             if player.rect.colliderect(portal.rect):
